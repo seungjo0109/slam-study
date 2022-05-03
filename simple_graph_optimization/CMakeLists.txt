@@ -18,21 +18,46 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(visualization_msgs REQUIRED)
 find_package(Eigen3 REQUIRED)
-# find_package(g2o REQUIRED)
+find_package(g2o REQUIRED)
+
+set(OpenGL_GL_PREFERENCE LEGACY)
+set(G2O_LIBS
+  g2o_core 
+  g2o_types_sba 
+  g2o_types_slam3d
+  g2o_solver_csparse 
+  g2o_stuff 
+  g2o_csparse_extension
+)
+
+set(dependencies
+  rclcpp
+  std_msgs
+  visualization_msgs
+)
 
 include_directories(
   include
   ${EIGEN3_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_SOURCE_DIR}/../third_party
 )
 
-add_executable(simple_graph_optimization src/simple_graph_optimization.cpp)
+add_executable(simple_graph_optimization 
+  src/simple_graph_optimization.cpp
+  src/pose_graph_optimizer.cpp
+  src/sim_model.cpp
+)
 ament_target_dependencies(simple_graph_optimization
-  rclcpp
+  ${dependencies}
 )
 target_link_libraries(simple_graph_optimization
   ${EIGEN3_LIBS}
-
+  ${G2O_LIBS}
+  ${visualization_msgs_LIBRARIES}
+  ${geometry_msgs_LIBRARIES}
 )
 
 target_include_directories(simple_graph_optimization PUBLIC
@@ -44,12 +69,6 @@ install(TARGETS simple_graph_optimization
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # uncomment the line when a copyright and license is not present in all source files
-  #set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # uncomment the line when this package is not in a git repo
-  #set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
 
