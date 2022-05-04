@@ -45,33 +45,10 @@
 
 #include "alias_tpyes.h"
 
-static double UniformRand(double lower_bound, double upper_bound)
-{
-    return lower_bound + ((double) std::rand()/(RAND_MAX + 1.0)) * (upper_bound - lower_bound);
-}
-static double GaussRand(double mean, double sigma)
-{
-    double x, y, r2;
-    do {
-        x = -1.0 + 2.0 * UniformRand(0.0, 1.0);
-        y = -1.0 + 2.0 * UniformRand(0.0, 1.0);
-        r2 = x*x + y*y;
-    } while(r2 > 1.0 || r2 == 0.0);
-    return mean + sigma * y * std::sqrt(-2.0 * log(r2) / r2);
-}
-
-class Sampling
-{
-public:
-    static int Uniform(int from, int to);
-    
-    static double Uniform();
-
-    static double Gaussian(double sigma);
-};
-
 class SimModel
 {
+    using VecSE3Quat = std::vector<g2o::SE3Quat, Eigen::aligned_allocator<g2o::SE3Quat>>;
+
 public:
     explicit SimModel(int num_poses);
     ~SimModel();
@@ -80,17 +57,51 @@ public:
     void GenerateTrueState();
     /* Add noise to true states */
     void GenerateSimState();
+    /* Get true state */
+    VecSE3Quat GetTrueState() {return true_poses_; }
+    /* Get noise added simulation state */
+    VecSE3Quat GetSimState() {return sim_poses_; }
 
+    /* Simple test function */
     void TestFunc();
 
-    visualization_msgs::msg::MarkerArray true_node_;    //FIXME
-    visualization_msgs::msg::MarkerArray sim_node_;     // FIXME
-
 private:
-
     int num_poses_{10};
     int vertex_id_{0};
 
-    std::vector<g2o::SE3Quat, Eigen::aligned_allocator<g2o::SE3Quat>> true_poses_;
-    std::vector<g2o::SE3Quat, Eigen::aligned_allocator<g2o::SE3Quat>> sim_poses_;
+    VecSE3Quat true_poses_;
+    VecSE3Quat sim_poses_;
+};
+
+/* ~~~~~~~~~~~~~~~~ 
+    SimVisualizer
+ ~~~~~~~~~~~~~~~~ */ 
+class SimVisualizer
+{
+public:
+    enum class DataType{
+        TrueNode = 0,
+        SimNode = 1,
+    };
+
+    void SetVisualizationMsg(DataType type, SimModel& sim_model);
+    visualization_msgs::msg::MarkerArray  GetVisualizationMsg(DataType type);
+
+private:
+    visualization_msgs::msg::MarkerArray true_node_;
+    visualization_msgs::msg::MarkerArray sim_node_;
+};
+
+/* ~~~~~~~~~~~~ 
+    Sampling
+ ~~~~~~~~~~~~ */ 
+class Sampling
+{
+public:
+
+    static int Uniform(int from, int to);
+    
+    static double Uniform();
+
+    static double Gaussian(double sigma);
 };
