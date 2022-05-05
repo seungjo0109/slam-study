@@ -6,7 +6,7 @@
 SimModel::SimModel(int num_poses)
     : num_poses_(num_poses)
 {
-
+    optimizer_ = std::make_unique<PoseGraphOptimizer>();
 }
 
 SimModel::~SimModel()
@@ -48,7 +48,6 @@ void SimModel::GenerateTrueState()
     }
 }
 
-
 void SimModel::GenerateSimState()
 {
     for(int i=0; i<true_poses_.size(); i++){
@@ -64,6 +63,59 @@ void SimModel::GenerateSimState()
 
         sim_poses_.push_back(pose);
     }
+}
+
+void SimModel::AddVertex()
+{
+    for(int i=0; i<sim_poses_.size(); i++){
+        g2o::VertexSE3Expmap *vtx = new g2o::VertexSE3Expmap();
+        
+        if(i==0){
+            vtx->setFixed(true);
+        }
+        vtx->setId(vertex_id_++);
+        vtx->setEstimate(sim_poses_.at(i));
+        optimizer_->AddVertex(vtx);
+    }
+}
+
+void SimModel::AddEdge()
+{
+    for(int i=1; i<true_poses_.size(); i++){
+        g2o::EdgeSE3Expmap* edge = new g2o::EdgeSE3Expmap();
+        g2o::SE3Quat relative_pos = true_poses_.at(i-1).inverse() * true_poses_.at(i);
+        
+        edge->setMeasurement(relative_pos);
+
+        MatXX A = Eigen::MatrixXd::Random(6,6).cwiseAbs();
+        MatXX information = A.transpose() * A;
+
+        edge->setInformation(information);
+        edge->vertices()[0] = optimizer_->GetOptimizer()->vertex(i-1);
+        edge->vertices()[1] = optimizer_->GetOptimizer()->vertex(i);
+    }
+
+    // Add non-temporal edges. (5 & 11)
+    g2o::EdgeSE3Expmap* e511(new g2o::EdgeSE3Expmap());
+    g2o::SE3Quat relative_pos = true_poses_.at(5).inverse() * true_poses_.at(11);
+    e511->setMeasurement(relative_pos);
+    MatXX A = Eigen::MatrixXd::Random(6,6).cwiseAbs();
+    MatXX information = A.transpose() * A;
+    e511->setInformation(information);
+    e511->vertices()[0] = optimizer_->GetOptimizer()->vertex(5);
+    e511->vertices()[1] = optimizer_->GetOptimizer()->vertex(11);
+    optimizer_->AddEdge(e511);
+
+    // Add non-temporal edges. (3 & 14)
+    g2o::EdgeSE3Expmap* e314(new g2o::EdgeSE3Expmap());
+    relative_pos = true_poses_.at(3).inverse() * true_poses_.at(14);
+    e511->setMeasurement(relative_pos);
+    A = Eigen::MatrixXd::Random(6,6).cwiseAbs();
+    information = A.transpose() * A;
+    e511->setInformation(information);
+    e511->vertices()[0] = optimizer_->GetOptimizer()->vertex(3);
+    e511->vertices()[1] = optimizer_->GetOptimizer()->vertex(14);
+    optimizer_->AddEdge(e314);
 }
 
 void SimModel::TestFunc()
@@ -118,15 +170,60 @@ void SimVisualizer::SetVisualizationMsg(DataType type, SimModel& sim_model)
             sim_node.pose.orientation.z = sim_model.GetSimState().at(i).rotation().z();
             sim_node.pose.orientation.w = sim_model.GetSimState().at(i).rotation().w();
             sim_node.pose.orientation.x = sim_model.GetSimState().at(i).rotation().x();
-            sim_node.color.r = sim_node.color.g = sim_node.color.b = 0.0;
+            sim_node.color.r = 1.0;
+            sim_node.color.g = sim_node.color.b = 0.0;
             sim_node.color.a = 0.25;
 
             sim_node_.markers.push_back(sim_node);
         }
         spdlog::info("true poses size: {}", sim_model.GetSimState().size());
         break;
+    case DataType::OptimizedNode:
+        visualization_msgs::msg::Marker node;
+        double pos_init[3];
 
-    default:
+        for(int i = 0; i < sim_model.GetSimState().size(); i++){
+            g2o::VertexSE3Expmap* vertex = static_cast<g2o::VertexSE3Expmap*>(sim_model.GetOptimizer()->vertex(i));
+            Isometry optimized_pos = vertex->estimate();
+            Quaternion q = (Quaternion)optimized_pos.rotation();
+
+            if(i == 0){
+                pos_init[0] = optimized_pos.translation()[0];
+                pos_init[1] = optimized_pos.translation()[1];
+                pos_init[2] = optimized_pos.translation()[2];
+
+                node.pose.position.x = 0;
+                node.pose.position.y = 0;
+                node.pose.position.z = 0;
+            }
+
+            node.pose.position.x = optimized_pos.translation()[0] - pos_init[0];
+            node.pose.position.y = optimized_pos.translation()[1] - pos_init[1];
+            node.pose.position.z = optimized_pos.translation()[2] - pos_init[2];
+
+            node.pose.orientation.x = q.x();
+            node.pose.orientation.y = q.y();
+            node.pose.orientation.z = q.z();
+            node.pose.orientation.w = q.w();
+
+            if(node.pose.orientation.w < 0){
+                node.pose.orientation.x *= -1;
+                node.pose.orientation.y *= -1;
+                node.pose.orientation.z *= -1;
+                node.pose.orientation.w *= -1;
+            }
+
+            node.header.frame_id = "world";
+            node.header.stamp = rclcpp::Clock().now();
+            node.ns = "optimized_node";
+            node.id = i;
+            node.type = visualization_msgs::msg::Marker::SPHERE;
+            node.scale.x = node.scale.y = node.scale.z = 0.1;
+            node.color.r = node.color.g = node.color.b = 0.0;
+            node.color.a = 1.0;
+
+            optimized_node_.markers.push_back(node);      
+        }
 
         break;
     }
@@ -139,8 +236,17 @@ visualization_msgs::msg::MarkerArray SimVisualizer::GetVisualizationMsg(DataType
         case DataType::TrueNode:
             return true_node_;
             break;
+        case DataType::TrueEdge:
+            return true_edge_;
+            break;
         case DataType::SimNode:
             return sim_node_;
+            break;
+        case DataType::OptimizedNode:
+            return optimized_node_;
+            break;
+        case DataType::OptimizedEdge:
+            return optimized_edge_;
             break;
     }
 }

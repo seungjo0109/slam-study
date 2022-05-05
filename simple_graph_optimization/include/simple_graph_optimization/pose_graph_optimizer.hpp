@@ -48,6 +48,19 @@ public:
     PoseGraphOptimizer();
     ~PoseGraphOptimizer();
 
+    /* Add vertex into optimizer */
+    void AddVertex(g2o::VertexSE3Expmap* vtx){ optimizer_->addVertex(vtx); }
+    
+    /* Add edge into optimizer */
+    void AddEdge(g2o::EdgeSE3Expmap* edge){ optimizer_->addEdge(edge); }
+    
+    // TODO: Review GetOptimizer function
+    /* Return optimizer */
+    g2o::SparseOptimizer* GetOptimizer(){ return optimizer_; }
+    
+    /* Optimize one time per each loop */
+    void Optimize(int iter){ optimizer_->optimize(iter); }
+
 private:
 
     std::unique_ptr<g2o::BlockSolver_6_3::LinearSolverType> linear_solver_;

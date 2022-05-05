@@ -44,6 +44,7 @@
 #include <visualization_msgs/msg/marker_array.hpp>
 
 #include "alias_tpyes.h"
+#include "pose_graph_optimizer.hpp"
 
 class SimModel
 {
@@ -55,22 +56,44 @@ public:
     
     /* Generate ground truth */
     void GenerateTrueState();
+    
     /* Add noise to true states */
     void GenerateSimState();
+    
     /* Get true state */
     VecSE3Quat GetTrueState() {return true_poses_; }
+    
     /* Get noise added simulation state */
     VecSE3Quat GetSimState() {return sim_poses_; }
+
+    /* Get Optimizer */
+    g2o::SparseOptimizer* GetOptimizer(){ return optimizer_->GetOptimizer(); }
+
+    /* Add vertex data into optimizer */
+    void AddVertex();
+
+    /* Add Edge data into optimizer */
+    void AddEdge();
+
+    /* Optimize function */
+    void Optimize(int iter) { optimizer_->Optimize(iter); }
+
+    /* Optimize one time per each loop */
+    void OptimizeOnce(){ optimizer_->Optimize(1); }
 
     /* Simple test function */
     void TestFunc();
 
 private:
+
+    std::shared_ptr<PoseGraphOptimizer> optimizer_;
+
     int num_poses_{10};
     int vertex_id_{0};
 
     VecSE3Quat true_poses_;
     VecSE3Quat sim_poses_;
+
 };
 
 /* ~~~~~~~~~~~~~~~~ 
@@ -79,17 +102,28 @@ private:
 class SimVisualizer
 {
 public:
+
+    /* Rviz visualization type */
     enum class DataType{
         TrueNode = 0,
-        SimNode = 1,
+        TrueEdge,
+        SimNode,
+        OptimizedNode,
+        OptimizedEdge,
     };
 
+    /* Set visualization_msgs::mgs::MarkerArray */
     void SetVisualizationMsg(DataType type, SimModel& sim_model);
+
+    /* Return visualization_msgs::msgs::MarkerArray */
     visualization_msgs::msg::MarkerArray  GetVisualizationMsg(DataType type);
 
 private:
     visualization_msgs::msg::MarkerArray true_node_;
+    visualization_msgs::msg::MarkerArray true_edge_;
     visualization_msgs::msg::MarkerArray sim_node_;
+    visualization_msgs::msg::MarkerArray optimized_node_;
+    visualization_msgs::msg::MarkerArray optimized_edge_; 
 };
 
 /* ~~~~~~~~~~~~ 
