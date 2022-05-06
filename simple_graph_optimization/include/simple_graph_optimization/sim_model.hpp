@@ -107,6 +107,7 @@ public:
         SimNode,
         OptimizedNode,
         TrueEdge,
+        SimEdge,
         OptimizedEdge,
     };
 
@@ -122,6 +123,7 @@ private:
     visualization_msgs::msg::MarkerArray true_node_;
     visualization_msgs::msg::MarkerArray true_edge_;
     visualization_msgs::msg::MarkerArray sim_node_;
+    visualization_msgs::msg::MarkerArray sim_edge_;
     visualization_msgs::msg::MarkerArray optimized_node_;
     visualization_msgs::msg::MarkerArray optimized_edge_; 
 };

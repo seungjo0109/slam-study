@@ -19,6 +19,7 @@ public:
         true_node_pub_          = this->create_publisher<visualization_msgs::msg::MarkerArray>("true_node", 10);
         true_edge_pub_          = this->create_publisher<visualization_msgs::msg::MarkerArray>("true_edge", 10);
         sim_node_pub_           = this->create_publisher<visualization_msgs::msg::MarkerArray>("sim_node", 10);
+        sim_edge_pub_           = this->create_publisher<visualization_msgs::msg::MarkerArray>("sim_edge", 10);
         optimized_node_pub_     = this->create_publisher<visualization_msgs::msg::MarkerArray>("optimized_node", 10);
         optimized_edge_pub_     = this->create_publisher<visualization_msgs::msg::MarkerArray>("optimized_edge", 10);
 
@@ -41,6 +42,7 @@ public:
         visualizer_->SetVisualizationMsg(SimVisualizer::DataType::TrueNode, *sim_model_);
         visualizer_->SetVisualizationMsg(SimVisualizer::DataType::TrueEdge, *sim_model_);
         visualizer_->SetVisualizationMsg(SimVisualizer::DataType::SimNode, *sim_model_);
+        visualizer_->SetVisualizationMsg(SimVisualizer::DataType::SimEdge, *sim_model_);
         visualizer_->SetVisualizationMsg(SimVisualizer::DataType::OptimizedNode, *sim_model_);
         visualizer_->SetVisualizationMsg(SimVisualizer::DataType::OptimizedEdge, *sim_model_);
 
@@ -48,6 +50,7 @@ public:
             true_node_pub_->publish(visualizer_->GetVisualizationMsg(SimVisualizer::DataType::TrueNode));
             true_edge_pub_->publish(visualizer_->GetVisualizationMsg(SimVisualizer::DataType::TrueEdge));
             sim_node_pub_->publish(visualizer_->GetVisualizationMsg(SimVisualizer::DataType::SimNode));
+            sim_edge_pub_->publish(visualizer_->GetVisualizationMsg(SimVisualizer::DataType::SimEdge));
             optimized_node_pub_->publish(visualizer_->GetVisualizationMsg(SimVisualizer::DataType::OptimizedNode));
             optimized_edge_pub_->publish(visualizer_->GetVisualizationMsg(SimVisualizer::DataType::OptimizedEdge));
         };
@@ -60,6 +63,7 @@ private:
     rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr true_node_pub_;
     rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr true_edge_pub_;
     rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr sim_node_pub_;
+    rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr sim_edge_pub_;
     rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr optimized_node_pub_;
     rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr optimized_edge_pub_;
 

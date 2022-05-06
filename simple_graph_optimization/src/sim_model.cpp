@@ -134,6 +134,7 @@ SimVisualizer::SimVisualizer()
     true_node_.markers.clear();
     true_edge_.markers.clear();
     sim_node_.markers.clear();
+    sim_edge_.markers.clear();
     optimized_node_.markers.clear();
     optimized_edge_.markers.clear();
 }
@@ -273,6 +274,40 @@ void SimVisualizer::SetVisualizationMsg(DataType type, SimModel& sim_model)
             }
             break;
         }
+        case DataType::SimEdge:
+        {
+            geometry_msgs::msg::Point p1;
+            geometry_msgs::msg::Point p2;
+
+            for(int i=1; i<sim_model.GetSimState().size(); i++){
+
+                visualization_msgs::msg::Marker edge;
+
+                edge.header.frame_id = "world";
+                edge.header.stamp = rclcpp::Clock().now();
+                edge.ns = "sim_edge";
+                edge.id = i;
+                edge.type = visualization_msgs::msg::Marker::LINE_LIST;
+                edge.scale.x = 0.05;
+                edge.pose.orientation.w = 1.0;
+                edge.color.g = edge.color.b = 0.0;
+                edge.color.r = 1.0;
+                edge.color.a = 0.1;           
+
+                p1.x = sim_model.GetSimState()[i-1].translation()[0];
+                p1.y = sim_model.GetSimState()[i-1].translation()[1];
+                p1.z = sim_model.GetSimState()[i-1].translation()[2];
+                edge.points.push_back(p1);
+
+                p2.x = sim_model.GetSimState()[i].translation()[0];
+                p2.y = sim_model.GetSimState()[i].translation()[1];
+                p2.z = sim_model.GetSimState()[i].translation()[2];
+                edge.points.push_back(p2);
+
+                sim_edge_.markers.push_back(edge);
+            }
+            break;
+        }
         case DataType::OptimizedEdge:
         {
             double pos_init[3];
@@ -297,7 +332,7 @@ void SimVisualizer::SetVisualizationMsg(DataType type, SimModel& sim_model)
                 edge.pose.orientation.w = 1.0;
                 edge.color.r = edge.color.g = 0.0;
                 edge.color.b = 1.0;
-                edge.color.a = 0.25;    
+                edge.color.a = 1.0;    
 
                 if(i == 1){
                     pos_init[0] = start_optimized_pos.translation()[0];
@@ -334,6 +369,9 @@ visualization_msgs::msg::MarkerArray SimVisualizer::GetVisualizationMsg(DataType
             break;
         case DataType::SimNode:
             return sim_node_;
+            break;
+        case DataType::SimEdge:
+            return sim_edge_;
             break;
         case DataType::OptimizedNode:
             return optimized_node_;

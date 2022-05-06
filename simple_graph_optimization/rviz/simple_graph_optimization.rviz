@@ -12,6 +12,7 @@ Panels:
         - /MarkerArray4/Topic1
         - /MarkerArray4/Namespaces1
         - /MarkerArray5
+        - /MarkerArray6
       Splitter Ratio: 0.5
     Tree Height: 793
   - Class: rviz_common/Selection
@@ -107,6 +108,18 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /optimized_edge
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: MarkerArray
+      Namespaces:
+        sim_node: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /sim_edge
       Value: true
   Enabled: true
   Global Options:
