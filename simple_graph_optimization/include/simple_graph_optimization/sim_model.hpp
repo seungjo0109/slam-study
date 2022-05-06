@@ -101,15 +101,16 @@ private:
 class SimVisualizer
 {
 public:
-
     /* Rviz visualization type */
     enum class DataType{
         TrueNode = 0,
-        TrueEdge,
         SimNode,
         OptimizedNode,
+        TrueEdge,
         OptimizedEdge,
     };
+
+    SimVisualizer();
 
     /* Set visualization_msgs::mgs::MarkerArray */
     void SetVisualizationMsg(DataType type, SimModel& sim_model);
