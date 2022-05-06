@@ -89,7 +89,6 @@ private:
     std::shared_ptr<PoseGraphOptimizer> optimizer_;
 
     int num_poses_{10};
-    int vertex_id_{0};
 
     VecSE3Quat true_poses_;
     VecSE3Quat sim_poses_;

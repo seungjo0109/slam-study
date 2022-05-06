@@ -73,7 +73,7 @@ void SimModel::AddVertex()
         if(i==0){
             vtx->setFixed(true);
         }
-        vtx->setId(vertex_id_++);
+        vtx->setId(i);
         vtx->setEstimate(sim_poses_.at(i));
         optimizer_->AddVertex(vtx);
     }
@@ -93,6 +93,8 @@ void SimModel::AddEdge()
         edge->setInformation(information);
         edge->vertices()[0] = optimizer_->GetOptimizer()->vertex(i-1);
         edge->vertices()[1] = optimizer_->GetOptimizer()->vertex(i);
+
+        optimizer_->AddEdge(edge);
     }
 
     // Add non-temporal edges. (5 & 11)

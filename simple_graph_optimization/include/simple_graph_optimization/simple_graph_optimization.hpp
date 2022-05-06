@@ -34,7 +34,7 @@ public:
 
         sim_model_->GetOptimizer()->initializeOptimization();
         sim_model_->GetOptimizer()->setVerbose(true);
-        // sim_model_->Optimize(20);
+        sim_model_->Optimize(20);
         // sim_model_->OptimizeOnce();
         
         visualizer_->SetVisualizationMsg(SimVisualizer::DataType::TrueNode, *sim_model_);
