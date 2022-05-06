@@ -13,7 +13,6 @@
 </br>
 
 ## Graph Optimization Configuration
----
 * Pose: SE3Quat
 * Vertex: VertexSE3Expmap
 * Edge: EdgeSE3Expmap
