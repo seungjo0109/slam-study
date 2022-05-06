@@ -13,7 +13,7 @@ class SimpleGraphOptimization : public rclcpp::Node
 {
 public:
     SimpleGraphOptimization() : Node("simple_graph_optimization"){
-        
+
         /* Publisher & Subscriber initialization */
         InitRosPublisher();
 
@@ -54,6 +54,8 @@ private:
         sim_edge_pub_           = this->create_publisher<visualization_msgs::msg::MarkerArray>("sim_edge", 10);
         optimized_node_pub_     = this->create_publisher<visualization_msgs::msg::MarkerArray>("optimized_node", 10);
         optimized_edge_pub_     = this->create_publisher<visualization_msgs::msg::MarkerArray>("optimized_edge", 10);
+        sim_text_pub_           = this->create_publisher<visualization_msgs::msg::MarkerArray>("sim_text", 10);
+        iter_text_pub_          = this->create_publisher<visualization_msgs::msg::MarkerArray>("iter_text", 10);
     }
 
     /* Set visualization messages */
@@ -64,6 +66,8 @@ private:
         visualizer_->SetVisualizationMsg(SimVisualizer::DataType::SimEdge, *sim_model_);
         visualizer_->SetVisualizationMsg(SimVisualizer::DataType::OptimizedNode, *sim_model_);
         visualizer_->SetVisualizationMsg(SimVisualizer::DataType::OptimizedEdge, *sim_model_);
+        visualizer_->SetVisualizationMsg(SimVisualizer::DataType::SimText, *sim_model_);
+        visualizer_->SetVisualizationMsg(SimVisualizer::DataType::IterText, *sim_model_);
     }
 
     /* Publish ROS messages */
@@ -74,6 +78,8 @@ private:
         sim_edge_pub_->publish(visualizer_->GetVisualizationMsg(SimVisualizer::DataType::SimEdge));
         optimized_node_pub_->publish(visualizer_->GetVisualizationMsg(SimVisualizer::DataType::OptimizedNode));
         optimized_edge_pub_->publish(visualizer_->GetVisualizationMsg(SimVisualizer::DataType::OptimizedEdge));
+        sim_text_pub_->publish(visualizer_->GetVisualizationMsg(SimVisualizer::DataType::SimText));
+        iter_text_pub_->publish(visualizer_->GetVisualizationMsg(SimVisualizer::DataType::IterText));
     }
 
 private:
@@ -84,6 +90,8 @@ private:
     rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr sim_edge_pub_;
     rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr optimized_node_pub_;
     rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr optimized_edge_pub_;
+    rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr sim_text_pub_;
+    rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr iter_text_pub_;
 
     std::unique_ptr<PoseGraphOptimizer> pose_graph_optimizer_;
     std::unique_ptr<SimModel> sim_model_;

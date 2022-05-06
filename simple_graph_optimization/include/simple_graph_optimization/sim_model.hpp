@@ -69,6 +69,9 @@ public:
     /* Get Optimizer */
     g2o::SparseOptimizer* GetOptimizer(){ return optimizer_->GetOptimizer(); }
 
+    /* Get Optimization iteration count */
+    int GetOptimizedIteration(){ return iter_optimization; }
+
     /* Add vertex data into optimizer */
     void AddVertex();
 
@@ -76,19 +79,22 @@ public:
     void AddEdge();
 
     /* Optimize function */
-    void Optimize(int iter) { optimizer_->Optimize(iter); }
+    void Optimize(int iter) { 
+        iter_optimization += iter;
+        optimizer_->Optimize(iter); 
+    }
 
     /* Optimize one time per each loop */
-    void OptimizeOnce(){ optimizer_->Optimize(1); }
-
-    /* Simple test function */
-    void TestFunc();
+    void OptimizeOnce(){ 
+        iter_optimization += 1;
+        optimizer_->Optimize(1); 
+    }
 
 private:
-
     std::shared_ptr<PoseGraphOptimizer> optimizer_;
 
     int num_poses_{10};
+    int iter_optimization{0};
 
     VecSE3Quat true_poses_;
     VecSE3Quat sim_poses_;
@@ -109,6 +115,8 @@ public:
         TrueEdge,
         SimEdge,
         OptimizedEdge,
+        SimText,
+        IterText,
     };
 
     SimVisualizer();
@@ -126,6 +134,8 @@ private:
     visualization_msgs::msg::MarkerArray sim_edge_;
     visualization_msgs::msg::MarkerArray optimized_node_;
     visualization_msgs::msg::MarkerArray optimized_edge_; 
+    visualization_msgs::msg::MarkerArray sim_text_;
+    visualization_msgs::msg::MarkerArray iter_text_;
 };
 
 /* ~~~~~~~~~~~~ 

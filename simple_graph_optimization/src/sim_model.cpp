@@ -120,11 +120,6 @@ void SimModel::AddEdge()
     optimizer_->AddEdge(e314);
 }
 
-void SimModel::TestFunc()
-{
-
-}
-
 /* ~~~~~~~~~~~~~~~~ 
     SimVisualizer
  ~~~~~~~~~~~~~~~~ */
@@ -137,6 +132,8 @@ SimVisualizer::SimVisualizer()
     sim_edge_.markers.clear();
     optimized_node_.markers.clear();
     optimized_edge_.markers.clear();
+    sim_text_.markers.clear();
+    iter_text_.markers.clear();
 }
 
 void SimVisualizer::SetVisualizationMsg(DataType type, SimModel& sim_model)
@@ -354,6 +351,42 @@ void SimVisualizer::SetVisualizationMsg(DataType type, SimModel& sim_model)
             }  
             break;   
         }
+        case DataType::SimText:
+        {
+            visualization_msgs::msg::Marker text;
+            text.header.frame_id = "world";
+            text.header.stamp = rclcpp::Clock().now();
+            text.ns = "sim_text";
+            text.id = 0;
+            text.type = visualization_msgs::msg::Marker::TEXT_VIEW_FACING;
+            text.action = visualization_msgs::msg::Marker::ADD;
+            text.scale.z = 0.2;
+            text.color.r = 0.0; text.color.g = 0.0; text.color.b = 0.0; text.color.a = 1.0;
+            text.pose.position.x = -2.0;
+            text.pose.position.y = 0.1;
+            text.pose.position.z = 1.0;
+            std::string comment = "[Simple Graph Optimization]\n\n\nPose: SE3Quat\n\nVertex: VertexSE3Expmap\n\nEdge: EdgeSE3Expmap\n\nInformation Matrix: Random\n\n\nGray: True Poses\n\nRed: Noised Simulation Poses\n\nBlue: Optimized Poses";
+            text.text = comment;
+            sim_text_.markers.push_back(text);
+        }
+        case DataType::IterText:
+        {
+            visualization_msgs::msg::Marker text;
+            text.header.frame_id = "world";
+            text.header.stamp = rclcpp::Clock().now();
+            text.ns = "iter_text";
+            text.id = 0;
+            text.type = visualization_msgs::msg::Marker::TEXT_VIEW_FACING;
+            text.action = visualization_msgs::msg::Marker::ADD;
+            text.scale.z = 0.2;
+            text.color.r = 0.0; text.color.g = 0.0; text.color.b = 0.0; text.color.a = 1.0;
+            text.pose.position.x = -2.0;
+            text.pose.position.y = 0.1;
+            text.pose.position.z = 3.0;
+            std::string iteration_text = "Iteration: " + std::to_string(sim_model.GetOptimizedIteration());
+            text.text = iteration_text;
+            iter_text_.markers.push_back(text);
+        }
     }
 }
 
@@ -378,6 +411,12 @@ visualization_msgs::msg::MarkerArray SimVisualizer::GetVisualizationMsg(DataType
             break;
         case DataType::OptimizedEdge:
             return optimized_edge_;
+            break;
+        case DataType::SimText:
+            return sim_text_;
+            break;
+        case DataType::IterText:
+            return iter_text_;
             break;
     }
 }

@@ -121,6 +121,30 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /sim_edge
       Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: MarkerArray
+      Namespaces:
+        sim_text: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /sim_text
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: MarkerArray
+      Namespaces:
+        iter_text: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /iter_text
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 245; 245; 245
@@ -164,7 +188,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 14.617785453796387
+      Distance: 13.905194282531738
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -179,10 +203,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6253979802131653
+      Pitch: 0.5503981113433838
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.5603979229927063
+      Yaw: 0.6703974604606628
     Saved: ~
 Window Geometry:
   Displays:
