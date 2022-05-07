@@ -6,10 +6,12 @@
 ## Contents
 * Optimization
     * [Simple graph optimization](./simple_graph_optimization/)
+    * [g2o data fitting](./g2o_data_fitting/)
 
 </br>
 
 ## Reference
 * Optimization
-    * [Pose Graph Optimization using g2o](https://github.com/edward0im/pgo_toy_example)
+    * [Pose Graph Optimization using g2o github](https://github.com/edward0im/pgo_toy_example)
     * [Pose Graph Optimization using g2o blog](https://edward0im.github.io/engineering/2020/09/08/pose-graph-optimization/) 
+    * [g2o data fitting example github](https://github.com/RainerKuemmerle/g2o/blob/master/g2o/examples/data_fitting)
