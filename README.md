@@ -1,4 +1,4 @@
-## SLAMProject
+## SLAM Project
 * In this repository, we learn and implement SLAM(Simultaneous Localization and Mapping) related theory and skills.
 
 </br>
@@ -6,7 +6,8 @@
 ## Contents
 * Optimization
     * [Simple graph optimization](./simple_graph_optimization/)
-    * [g2o data fitting](./g2o_data_fitting/)
+    * [g2o example](./g2o_example/)
+        * [g2o data fitting](./g2o_example/g2o_data_fitting/)
 
 </br>
 
