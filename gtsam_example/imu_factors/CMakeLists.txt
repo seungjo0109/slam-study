@@ -29,7 +29,9 @@ include_directories(
 )
 
 add_executable(imu_factors
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/imu_factors_test.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/src/imu_factors.cc
+    # ${CMAKE_CURRENT_SOURCE_DIR}/src/imu_factors_ref.cc
 )
 target_link_libraries(imu_factors
     ${EIGEN3_LIBS}
