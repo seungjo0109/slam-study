@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(imu_factors)
+project(localization)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -28,11 +28,11 @@ include_directories(
     ${Boost_INCLUDE_DIR}
 )
 
-add_executable(imu_factors
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/imu_factors_test.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/imu_factors.cc
+add_executable(localization
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/localization.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/localization_test.cc
 )
-target_link_libraries(imu_factors
+target_link_libraries(localization
     ${EIGEN3_LIBS}
     gtsam
 )
