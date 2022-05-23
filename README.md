@@ -1,4 +1,4 @@
-## SLAM Project
+## SLAM Study
 * In this repository, we learn and implement SLAM(Simultaneous Localization and Mapping) related theory and skills.
 
 </br>
