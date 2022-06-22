@@ -7,6 +7,7 @@ g2o_example/g2o_data_fitting/build/
 gtsam_example/imu_factors/build/
 gtsam_example/localization/build/
 
+slam_book_example/3d_rigid_body_motion/coordinate_transform/build/
 slam_book_example/3d_rigid_body_motion/use_eigen/build/
 slam_book_example/3d_rigid_body_motion/use_geometry/build/
 
