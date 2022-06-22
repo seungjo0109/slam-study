@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(plot_trajectory)
+project(displaying_camera_pose)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -18,10 +18,10 @@ include_directories(
     ${Pangolin_INCLUDE_DIRS}
 )
 
-add_executable(plot_trajectory
-    ${CMAKE_CURRENT_SOURCE_DIR}/plot_trajectory.cc
+add_executable(displaying_camera_pose
+    ${CMAKE_CURRENT_SOURCE_DIR}/displaying_camera_pose.cc
 )
-target_link_libraries(plot_trajectory
+target_link_libraries(displaying_camera_pose
     ${EIGEN3_LIBS}
     ${Pangolin_LIBRARIES}
 )

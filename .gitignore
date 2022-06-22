@@ -8,6 +8,7 @@ gtsam_example/imu_factors/build/
 gtsam_example/localization/build/
 
 slam_book_example/3d_rigid_body_motion/coordinate_transform/build/
+slam_book_example/3d_rigid_body_motion/displaying_camera_pose/build/
 slam_book_example/3d_rigid_body_motion/plot_trajectory/build/
 slam_book_example/3d_rigid_body_motion/use_eigen/build/
 slam_book_example/3d_rigid_body_motion/use_geometry/build/
