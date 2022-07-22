@@ -14,6 +14,7 @@ slam_book_example/3d_rigid_body_motion/use_eigen/build/
 slam_book_example/3d_rigid_body_motion/use_geometry/build/
 slam_book_example/lie_group_algebra/use_sophus/build/
 slam_book_example/lie_group_algebra/trajectory_error/build/
+slam_book_example/cameras_and_images/image_basics/build/
 
 
 visual_slam_review/least_square/build/
