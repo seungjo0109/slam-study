@@ -16,6 +16,7 @@ slam_book_example/lie_group_algebra/use_sophus/build/
 slam_book_example/lie_group_algebra/trajectory_error/build/
 slam_book_example/cameras_and_images/image_basics/build/
 slam_book_example/cameras_and_images/undistort_image/build/
+slam_book_example/cameras_and_images/stereo_vision/build/
 
 visual_slam_review/least_square/build/
 visual_slam_review/keypoint_descriptor/build/
